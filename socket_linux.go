@@ -11,10 +11,8 @@ func DaemonDial(unixFile string) (conn net.Conn, err error) {
 	conn, err = net.Dial("unix", unixFile)
 	if err != nil {
 		//	restart then try again
-		exec.Command("systemctl", "--user", "disable", "kr").Run()
-		exec.Command("systemctl", "--user", "enable", "kr").Run()
-		exec.Command("systemctl", "--user", "stop", "kr").Run()
-		exec.Command("systemctl", "--user", "start", "kr").Run()
+		exec.Command("killall", "krd").Run()
+		exec.Command("nohup", "/usr/bin/krd", "&").Run()
 		<-time.After(time.Second)
 		conn, err = net.Dial("unix", unixFile)
 	}
