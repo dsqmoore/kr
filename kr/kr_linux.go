@@ -16,14 +16,8 @@ func runCommandWithUserInteraction(name string, arg ...string) {
 }
 
 func restartCommand(c *cli.Context) (err error) {
-	exec.Command("systemctl", "--user", "daemon-reload").Run()
-	exec.Command("systemctl", "--user", "disable", "kr").Run()
-	exec.Command("systemctl", "--user", "stop", "kr").Run()
-	exec.Command("systemctl", "--user", "enable", "kr").Run()
-	if err := exec.Command("systemctl", "--user", "start", "kr").Run(); err != nil {
-		//	fall back to system-level daemon
-		runCommandWithUserInteraction("systemctl", "restart", "kr")
-	}
+	exec.Command("killall", "krd").Run()
+	exec.Command("nohup", "krd", "&").Start()
 	PrintErr(os.Stderr, "Restarted Kryptonite daemon.")
 	return
 }
