@@ -37,11 +37,7 @@ func hasYum() bool {
 func uninstallCommand(c *cli.Context) (err error) {
 	confirmOrFatal(os.Stderr, "Uninstall Kryptonite from this workstation? (same as sudo apt-get/yum remove kr)")
 
-	exec.Command("systemctl", "--user", "disable", "kr").Run()
-	if err := exec.Command("systemctl", "--user", "stop", "kr").Run(); err != nil {
-		exec.Command("sudo", "systemctl", "disable", "kr").Run()
-		exec.Command("sudo", "systemctl", "stop", "kr").Run()
-	}
+	exec.Command("killall", "krd").Run()
 
 	if hasAptGet() {
 		uninstallCmd := exec.Command("sudo", "apt-get", "remove", "kr", "-y")
